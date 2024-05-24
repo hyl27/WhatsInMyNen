@@ -1,62 +1,85 @@
 package com.dao;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 
 import com.vo.MynenVO;
 
 import main.DBConnection;
 
 public class MynenDAO {
-	private Connection conn; 
-	private Statement stmt; 
-	private ResultSet rs; 
+	private Connection conn;
 	private PreparedStatement pstmt;
-	 private SessionManager session;
+	private CallableStatement cstmt = null;
+	
 
-	    public MynenDAO(SessionManager session) {
-	        this.session = session;
-	    }
-	
-	
 	// 냉장고 생성
-	public int insert_n(MynenVO vo) throws SQLException {  
+	public MynenVO insert_n(MynenVO nvo) throws SQLException {
 		try {
 			conn = DBConnection.getConnection();
-			pstmt = conn.prepareStatement("insert into mynenjanggo values ('', ?)");
-			
-			pstmt.setString(2, vo.getM_id());
-			rs = pstmt.executeQuery();
-			conn.commit();
-		}
-			finally {
-				if(pstmt != null)
-					pstmt.close();
+			String insert_nen = "{CALL insert_nen(?, ?)}";
+			cstmt = conn.prepareCall(insert_nen);
+			cstmt.setString(1, nvo.getM_id());		
+			cstmt.registerOutParameter(2, Types.VARCHAR);
+
+			cstmt.execute();
+			String addStatus= cstmt.getString(2);
+		} finally {
+			if (cstmt != null)
+				cstmt.close();
+			if (conn != null) {
+				conn.close();
 			}
-		return -1;
+		}
+		return nvo;
+	}
+
+	// 냉장고 삭제
+	public MynenVO delete_n(MynenVO nvo) throws SQLException {
+		try {
+			conn = DBConnection.getConnection();
+			String delete_nen = "{CALL delete_nen(?, ?, ?)}";
+			cstmt = conn.prepareCall(delete_nen);
+			cstmt.setString(1, nvo.getM_id());	
+			cstmt.setInt(2, nvo.getId());	
+			cstmt.registerOutParameter(3, Types.VARCHAR);
+
+			cstmt.execute();
+			String delStatus = cstmt.getString(3);
+		} finally {
+			if (cstmt != null)
+				cstmt.close();
+			if (conn != null) {
+				conn.close();
+			}
+		}
+		return nvo;
 	}
 	
-	// 냉장고 삭제
-	public int delete_n(int id) throws SQLException {
-		try {
-			conn = DBConnection.getConnection();
-			pstmt = conn.prepareStatement("delete from mynenjanggo where nen_id=?");
-			pstmt.setInt(1, id);
-			int n = pstmt.executeUpdate();
-			return n;
-		} finally {
+	// 냉장고 확인
+		public MynenVO select_n(MynenVO nvo) throws SQLException {
 			try {
-				if (pstmt != null)
-					pstmt.close();
-				if (conn != null)
-					pstmt.close();
-			} catch (SQLException se) {
-				System.out.println(se.getMessage());
+				conn = DBConnection.getConnection();
+				String select_nen = "{CALL select_nen(?, ?)}";
+				cstmt = conn.prepareCall(select_nen);
+				cstmt.setString(1, nvo.getM_id());		
+				cstmt.registerOutParameter(2, Types.VARCHAR);
+
+				cstmt.execute();
+				String nenjanggos = cstmt.getString(3);
+			} finally {
+				if (cstmt != null)
+					cstmt.close();
+				if (conn != null) {
+					conn.close();
+				}
 			}
+			return nvo;
 		}
-	}
 
 }
