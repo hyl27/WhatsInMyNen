@@ -8,9 +8,9 @@ public class MynenVO {
 	public MynenVO() {
 	}
 	
-	public MynenVO(int id, String m_id) {
-		this.id = id;
+	public MynenVO(String m_id, int id) {
 		this.m_id = m_id;
+		this.id = id;
 	}
 
 	public int getId() {
