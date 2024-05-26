@@ -143,12 +143,4 @@ public class nen_ingre extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                nen_ingre nen_ingre = new nen_ingre();
-                nen_ingre.setVisible(true);
-            }
-        });
-    }
 }
