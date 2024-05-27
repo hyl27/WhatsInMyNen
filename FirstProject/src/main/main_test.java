@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import com.dao.MemberDAO;
 import com.vo.MemberVO;
 
-public class Member_Login {
+public class main_test {
 
 		public static void main(String[] args) throws SQLException {
 	        MemberDAO memberDao = new MemberDAO();

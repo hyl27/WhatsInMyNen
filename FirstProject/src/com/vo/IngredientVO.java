@@ -10,6 +10,9 @@ public class IngredientVO {
 		this.ing_name = ing_name;
 		this.nen_id = nen_id;
 	}
+	public IngredientVO (String ing_name) {
+		this.ing_name = ing_name;
+	}
 	
 	public int getIng_id() {
 		return ing_id;
