@@ -18,6 +18,8 @@ import javax.swing.border.EmptyBorder;
 
 import com.dao.MemberDAO;
 
+import mainFram.front.LoginInfoManager;
+
 public class member_sign extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -110,8 +112,8 @@ public class member_sign extends JFrame {
 		            
 		            try {
 		                Map<String, String> loginInfo = new HashMap<>();
-		                loginInfo.put("username", memberid);
-		                loginInfo.put("password", userpass);
+		                loginInfo.put("userid", memberid);
+		                loginInfo.put("userpw", userpass);
 		                System.out.println("입력한 id : "+loginInfo);
 		                
 		                String loginStatus = memberDAO.login_m(memberid, userpass);
@@ -120,7 +122,8 @@ public class member_sign extends JFrame {
 		                if (loginStatus.equals("로그인 성공")) {
 		                    JOptionPane.showMessageDialog(null, "안녕하세요 반갑습니다 :)");
 		                    main_frame main_frameFrame = new main_frame();
-		                    main_frameFrame.setLoginInfo(loginInfo); // 로그인 정보 전달
+		                    //main_frameFrame.setLoginInfo(loginInfo); // 로그인 정보 전달
+		                    LoginInfoManager.getInstance().setLoginInfo(loginInfo);
 		                    main_frameFrame.setVisible(true); // nen_select 화면 열기
 		                    setVisible(false); // 로그인 창 닫기
 		                } else{

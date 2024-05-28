@@ -6,6 +6,7 @@ public class MynenVO {
 	
 	
 	public MynenVO() {
+	
 	}
 	
 	public MynenVO(String m_id, int id) {
