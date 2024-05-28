@@ -1,4 +1,4 @@
-
+--------------------------member
 //회원가입
 create or replace PROCEDURE JOIN_MEMBER (
     p_id IN VARCHAR2,
@@ -49,3 +49,6 @@ create or replace PROCEDURE LOGIN (
         p_login_status := '아이디 또는 비밀번호가 일치하지 않습니다.';
     END IF;
 END LOGIN;
+
+--------------------------review
+

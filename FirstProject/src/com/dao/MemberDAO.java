@@ -16,7 +16,6 @@ import main.DBConnection;
 public class MemberDAO {
 
 	private Connection conn; // DB와 연결된 객체
-	private Statement stmt;
 	private ResultSet rs; // SQL문 결과 담는 객체
 	private PreparedStatement pstmt = null; // SQL문 담는 객체
 	private CallableStatement cstmt = null;

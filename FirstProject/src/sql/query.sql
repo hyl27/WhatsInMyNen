@@ -98,6 +98,22 @@ ALTER TABLE recipes
         REFERENCES menus ( menu_id );
 
 
+------------ DROP TABLE RECIPES
+SELECT CONSTRAINT_NAME, TABLE_NAME
+FROM USER_CONSTRAINTS
+WHERE R_CONSTRAINT_NAME IN (
+    SELECT CONSTRAINT_NAME
+    FROM USER_CONSTRAINTS
+    WHERE TABLE_NAME = 'RECIPES'
+);--제약조건 걸린거 확인
+
+ALTER TABLE REVIEWS
+DROP CONSTRAINT REVIEWS_RECIPES_FK; --FK걸린거 삭제
+
+DROP TABLE RECIPES;--테이블삭제
+
+        
+        
 ----------- REVIEWS
 
 CREATE TABLE reviews (
@@ -119,4 +135,19 @@ ALTER TABLE reviews
     ADD CONSTRAINT reviews_recipes_fk FOREIGN KEY ( recipe_id )
         REFERENCES recipes ( recipe_id );
 
+..
+
+ALTER TABLE reviews
+ADD (
+    menus_menu_id INTEGER NOT NULL,
+    url CLOB
+); --RECIPES에 있던 컬럼 추가
+
+ALTER TABLE REVIEWS
+DROP COLUMN RECIPES_RECIPE_ID; --레시피와 연결되어있던 컬럼삭제 
+
+ALTER TABLE reviews
+    ADD CONSTRAINT reviews_menus_fk FOREIGN KEY ( menus_menu_id )
+        REFERENCES menus ( menu_id ); --MENUID FK지정
+        
         
