@@ -116,7 +116,7 @@ public class member_sign extends JFrame {
 		                
 		                String loginStatus = memberDAO.login_m(memberid, userpass);
 		                
-		                System.out.println("넌뭔데 " +loginStatus);
+		                System.out.println(loginStatus);
 		                if (loginStatus.equals("로그인 성공")) {
 		                    JOptionPane.showMessageDialog(null, "안녕하세요 반갑습니다 :)");
 		                    main_frame main_frameFrame = new main_frame();

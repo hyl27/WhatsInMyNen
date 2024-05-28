@@ -3,6 +3,7 @@ package com.dao;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
@@ -11,28 +12,30 @@ import com.vo.MemberVO;
 import com.vo.MynenVO;
 
 import main.DBConnection;
+import oracle.jdbc.internal.OracleTypes;
 
 public class IngredientDAO {
 
 	private Connection conn;
-	private PreparedStatement pstmt;
+	private ResultSet rs = null;
 	private CallableStatement cstmt = null;
 
 	// 재료 추가
-	public IngredientVO insert_i(IngredientVO ivo) throws SQLException {
+	public String insert_i(String m_id, int nen_id, String name) throws SQLException {
+		String add_ing_Status = null;
 		try {
-			MemberVO mvo = new MemberVO();
+			//MemberVO mvo = new MemberVO();
 			conn = DBConnection.getConnection();
 			String add_ing = "{CALL insert_ing(?, ?, ?, ?)}";
 			cstmt = conn.prepareCall(add_ing);
-			String id = mvo.getId();
-			cstmt.setString(1, id);
-			cstmt.setInt(2, ivo.getNen_id());
-			cstmt.setString(3, ivo.getIng_name());
+			//String id = mvo.getId();
+			cstmt.setString(1, m_id);
+			cstmt.setInt(2, nen_id);
+			cstmt.setString(3, name);
 			cstmt.registerOutParameter(4, Types.VARCHAR);
 
 			cstmt.execute();
-			String add_ing_Status = cstmt.getString(4);
+			add_ing_Status = cstmt.getString(4);
 		} finally {
 			if (cstmt != null)
 				cstmt.close();
@@ -40,24 +43,28 @@ public class IngredientDAO {
 				conn.close();
 			}
 		}
-		return ivo;
+		return add_ing_Status;
 	}
 
-	// 재료 선택
-	public IngredientVO select_i(IngredientVO ivo) throws SQLException {
+	// 재료 조회
+	public String view_i(String m_id, int nen_id) throws SQLException {
+		String ingredients = null;
 		try {
-			MemberVO mvo = new MemberVO();
+			//MemberVO mvo = new MemberVO();
 			conn = DBConnection.getConnection();
-			String add_ing = "{CALL insert_ing(?, ?, ?, ?)}";
-			cstmt = conn.prepareCall(add_ing);
-			String id = mvo.getId();
-			cstmt.setString(1, id);
-			cstmt.setInt(2, ivo.getNen_id());
-			cstmt.setString(3, ivo.getIng_name());
-			cstmt.registerOutParameter(4, Types.VARCHAR);
+			String view_ing = "{CALL view_ing(?, ?, ?)}";
+			cstmt = conn.prepareCall(view_ing);
+			//String id = mvo.getId();
+			cstmt.setString(1, m_id);
+			cstmt.setInt(2, nen_id);
+			cstmt.registerOutParameter(3, OracleTypes.CURSOR);
 
 			cstmt.execute();
-			String add_ing_Status = cstmt.getString(4);
+			rs = (ResultSet) cstmt.getObject(3);
+            while (rs.next()) {
+                ingredients = rs.getString("name");
+                System.out.println(ingredients);
+            }
 		} finally {
 			if (cstmt != null)
 				cstmt.close();
@@ -65,24 +72,26 @@ public class IngredientDAO {
 				conn.close();
 			}
 		}
-		return ivo;
+		return ingredients;
 	}
 
 	// 재료 수정
-	public IngredientVO update_i(IngredientVO ivo) throws SQLException {
+	public String update_i(String m_id, int nen_id, int i_id, String new_name) throws SQLException {
+		String result = null;
 		try {
-			MemberVO mvo = new MemberVO();
+			//MemberVO mvo = new MemberVO();
 			conn = DBConnection.getConnection();
-			String add_ing = "{CALL insert_ing(?, ?, ?, ?)}";
-			cstmt = conn.prepareCall(add_ing);
-			String id = mvo.getId();
-			cstmt.setString(1, id);
-			cstmt.setInt(2, ivo.getNen_id());
-			cstmt.setString(3, ivo.getIng_name());
-			cstmt.registerOutParameter(4, Types.VARCHAR);
+			String edit_ing = "{CALL update_ing(?, ?, ?, ?, ?)}";
+			cstmt = conn.prepareCall(edit_ing);
+			cstmt.setString(1, m_id);
+			cstmt.setInt(2, nen_id);
+			cstmt.setInt(3, i_id);
+			cstmt.setString(4, new_name);
+			cstmt.registerOutParameter(5, Types.VARCHAR);
 
 			cstmt.execute();
-			String add_ing_Status = cstmt.getString(4);
+			result = cstmt.getString(5);
+			System.out.println(result);
 		} finally {
 			if (cstmt != null)
 				cstmt.close();
@@ -90,24 +99,26 @@ public class IngredientDAO {
 				conn.close();
 			}
 		}
-		return ivo;
+		return result;
 	}
 
 	// 재료 삭제
-	public IngredientVO delete_i(IngredientVO ivo) throws SQLException {
+	public String delete_i(String m_id, int nen_id, int i_id) throws SQLException {
+		String result = null;
 		try {
-			MemberVO mvo = new MemberVO();
+			//MemberVO mvo = new MemberVO();
 			conn = DBConnection.getConnection();
-			String add_ing = "{CALL insert_ing(?, ?, ?, ?)}";
-			cstmt = conn.prepareCall(add_ing);
-			String id = mvo.getId();
-			cstmt.setString(1, id);
-			cstmt.setInt(2, ivo.getNen_id());
-			cstmt.setString(3, ivo.getIng_name());
+			String delete_ing = "{CALL delete_ing(?, ?, ?, ?)}";
+			cstmt = conn.prepareCall(delete_ing);
+			//String id = mvo.getId();
+			cstmt.setString(1, m_id);
+			cstmt.setInt(2, nen_id);
+			cstmt.setInt(3, i_id);
 			cstmt.registerOutParameter(4, Types.VARCHAR);
 
 			cstmt.execute();
-			String add_ing_Status = cstmt.getString(4);
+			result = cstmt.getString(4);
+			System.out.println(result);
 		} finally {
 			if (cstmt != null)
 				cstmt.close();
@@ -115,7 +126,7 @@ public class IngredientDAO {
 				conn.close();
 			}
 		}
-		return ivo;
+		return result;
 	}
 
 }
