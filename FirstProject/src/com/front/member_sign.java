@@ -105,18 +105,18 @@ public class member_sign extends JFrame {
 		loginBtn.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
 		        if (e.getSource() == loginBtn) {
-		            String username = tfUserid.getText();
+		            String memberid = tfUserid.getText();
 		            String userpass = tfUserpw.getText();
 		            
 		            try {
 		                Map<String, String> loginInfo = new HashMap<>();
-		                loginInfo.put("username", username);
+		                loginInfo.put("username", memberid);
 		                loginInfo.put("password", userpass);
 		                System.out.println("입력한 id : "+loginInfo);
 		                
-		                String loginStatus = memberDAO.login_m(username, userpass);
+		                String loginStatus = memberDAO.login_m(memberid, userpass);
 		                
-		                System.out.println("넌뭔데 " +loginStatus);
+		                System.out.println(loginStatus);
 		                if (loginStatus.equals("로그인 성공")) {
 		                    JOptionPane.showMessageDialog(null, "안녕하세요 반갑습니다 :)");
 		                    main_frame main_frameFrame = new main_frame();
