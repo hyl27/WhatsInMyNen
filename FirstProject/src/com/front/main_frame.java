@@ -25,6 +25,7 @@ public class main_frame extends JFrame {
     private seach_menu sm;
     private seach_ingri si;
     private review rv;
+    private nen_select jg;
 
     public main_frame() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -106,7 +107,13 @@ public class main_frame extends JFrame {
 
         rv = new review();
         rv.setLoginInfo(loginInfo);
-        cardPanel.add(rv, "review"); 
+        cardPanel.add(rv, "review");
+        
+        jg = new nen_select();
+        jg.setLoginInfo(loginInfo);
+        cardPanel.add(jg, "nen_select");
+        
+        
 
         System.out.println("패널 생성 및 로그인 정보 설정 완료!");
     }
