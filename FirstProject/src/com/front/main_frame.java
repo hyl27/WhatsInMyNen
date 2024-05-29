@@ -109,9 +109,9 @@ public class main_frame extends JFrame {
         rv.setLoginInfo(loginInfo);
         cardPanel.add(rv, "review");
         
-        jg = new nen_select();
-        jg.setLoginInfo(loginInfo);
-        cardPanel.add(jg, "nen_select");
+//        jg = new nen_select();
+//        jg.setLoginInfo(loginInfo);
+//        cardPanel.add(jg, "nen_select");
         
         
 
