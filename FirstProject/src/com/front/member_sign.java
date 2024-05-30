@@ -122,8 +122,7 @@ public class member_sign extends JFrame {
 		                if (loginStatus.equals("로그인 성공")) {
 		                    JOptionPane.showMessageDialog(null, "안녕하세요 반갑습니다 :)");
 		                    //main_frameFrame.setLoginInfo(loginInfo); // 로그인 정보 전달
-		                    System.out.println("\"너뭐야?\"");
-		                    LoginInfoManager.getInstance().setLoginInfo(loginInfo);
+		                    LoginInfoManager.getInstance().setLoginInfo(loginInfo); // 로그인 담기
 		                    main_frame main_frameFrame = new main_frame();
 		                    main_frameFrame.setVisible(true); // nen_select 화면 열기
 		                    setVisible(false); // 로그인 창 닫기

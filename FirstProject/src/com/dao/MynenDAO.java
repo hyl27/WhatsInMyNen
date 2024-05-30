@@ -53,6 +53,7 @@ public class MynenDAO {
 
 			cstmt.execute();
 			String delStatus = cstmt.getString(3);
+			System.out.println(delStatus);
 		} finally {
 			if (cstmt != null)
 				cstmt.close();

@@ -10,131 +10,174 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import com.dao.MynenDAO;
 import com.vo.MynenVO;
 
 import mainFram.front.LoginInfoManager;
+import mainFram.front.seach_ingri;
 
 public class nen_select extends JPanel {
-	MynenVO nvo = new MynenVO();
-	MynenDAO dao = new MynenDAO();
-	private String memberId;
+    private static final long serialVersionUID = 1L;
+    private MynenVO nvo = new MynenVO();
+    private MynenDAO dao = new MynenDAO();
+    private String memberId;
+    // nen_id 추가
+    private int nenId;
 
-	private JPanel contentPane;
-	private List<JButton> nenButtons; // 새로운 냉장고 버튼을 저장할 리스트를 추가합니다.
-	private Map<String, String> loginInfo;
-	private static final int MAX_NEN_BUTTONS = 3; // 최대 냉장고 버튼 개수를 정의합니다.
+    private JPanel contentPane;
+    private List<JButton> nenButtons;
+    private List<JCheckBox> nenCheckBoxes;
+    private static final int MAX_NEN_BUTTONS = 3;
 
-	private static final long serialVersionUID = 1L;
+    public void start() {
+        Map<String, String> loginInfo = LoginInfoManager.getInstance().getLoginInfo();
+        memberId = loginInfo.get("userid");
+        System.out.println(memberId);
+    }
 
-//	public void setLoginInfo(Map<String, String> loginInfo) {
-//		this.loginInfo = loginInfo; // loginInfo 맵 저장
-//		this.memberId = loginInfo.get("userid");
-//		System.out.println("리뷰 로그인정보: " + loginInfo);
-//	}
-	public void start() {
-		Map<String, String> loginInfo = LoginInfoManager.getInstance().getLoginInfo();
-		memberId = loginInfo.get("userid");
-		System.out.println(memberId);
-	}
-	
-	public nen_select() {
-		start();
-		
-		setLayout(null);
-		nenButtons = new ArrayList<>();
+    public nen_select() {
+        start();
 
-		JLabel lblNewLabel = new JLabel("냉장고 선택");
-		lblNewLabel.setBounds(12, 8, 166, 37);
-		lblNewLabel.setFont(new Font("굴림", Font.PLAIN, 20));
-		add(lblNewLabel);
+        setLayout(null);
+        nenButtons = new ArrayList<>();
+        nenCheckBoxes = new ArrayList<>();
 
-		contentPane = new JPanel();
-		contentPane.setBounds(12, 102, 802, 419);
-		contentPane.setLayout(null);
-		add(contentPane);
+        JLabel lblNewLabel = new JLabel("냉장고 선택");
+        lblNewLabel.setBounds(12, 8, 166, 37);
+        lblNewLabel.setFont(new Font("굴림", Font.PLAIN, 20));
+        add(lblNewLabel);
 
-		JLabel lblNewLabel1 = new JLabel("냉장고를 선택하세요");
-		lblNewLabel1.setBounds(12, 7, 269, 29);
-		contentPane.add(lblNewLabel1);
+        contentPane = new JPanel();
+        contentPane.setBounds(12, 102, 802, 419);
+        contentPane.setLayout(null);
+        add(contentPane);
 
-		JButton btnNewButton = new JButton("my 냉장고 생성");
-		btnNewButton.setBounds(567, 10, 223, 23);
-		contentPane.add(btnNewButton);
+        JButton btnNewButton = new JButton("my 냉장고 생성");
+        btnNewButton.setBounds(567, 10, 223, 23);
+        contentPane.add(btnNewButton);
 
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (nenButtons.size() < MAX_NEN_BUTTONS) {
-					insertNen();
-				} else {
-					JOptionPane.showMessageDialog(null, "최대 냉장고 개수에 도달했습니다.", "알림", JOptionPane.INFORMATION_MESSAGE);
-				}
-			}
-		});
+        btnNewButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (nenButtons.size() < MAX_NEN_BUTTONS) {
+                    insertNen();
+                } else {
+                    JOptionPane.showMessageDialog(null, "최대 냉장고 개수에 도달했습니다.", "알림", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        });
 
-		// 새로운 로그인 시, 기존 냉장고 버튼을 추가합니다.
-		addExistingNenButtons();
-	}
+        JButton btnDeleteButton = new JButton("선택한 냉장고 삭제");
+        btnDeleteButton.setBounds(300, 10, 223, 23);
+        contentPane.add(btnDeleteButton);
 
-	private void addExistingNenButtons() {
+        JLabel lblNewLabel1 = new JLabel("냉장고를 선택하세요");
+        lblNewLabel1.setBounds(22, 55, 269, 29);
+        add(lblNewLabel1);
 
-	    try {
-	        List<Integer> existingNenIds = dao.view_nen(memberId);
+        btnDeleteButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                deleteNen();
+            }
+        });
 
-	        for (int nenId : existingNenIds) {
-	            JButton nenButton = createNenButton(nenId);
-	            contentPane.add(nenButton);
-	            nenButtons.add(nenButton);
-	        }
+        addExistingNenButtons();
+    }
+    
+    private void addExistingNenButtons() {
+        try {
+            List<Integer> existingNenIds = dao.view_nen(memberId);
 
-	        contentPane.revalidate();
-	        contentPane.repaint();
+            for (int nenId : existingNenIds) {
+                addNenButton(nenId);
+            }
 
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
-	}
+            contentPane.revalidate();
+            contentPane.repaint();
 
-	private JButton createNenButton(int nenId) {
-		JButton nenButton = new JButton("냉장고 " + nenId);
-		nenButton.setBounds(getNextButtonX(), 50, 200, 380);
-		nenButton.setBackground(Color.WHITE);
-		nenButton.setFocusPainted(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void addNenButton(int nenId) {
+        JCheckBox nenCheckBox = new JCheckBox();
+        nenCheckBox.setBounds(getNextButtonX(), 10, 200, 20);
+        contentPane.add(nenCheckBox);
+        nenCheckBoxes.add(nenCheckBox);
 
-		nenButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// 버튼이 클릭되었을 때 실행되는 동작을 추가할 수 있습니다.
-			}
-		});
+        JButton nenButton = new JButton("냉장고 " + nenId);
+        nenButton.setBounds(getNextButtonX(), 50, 200, 380);
+        nenButton.setBackground(Color.WHITE);
+        nenButton.setFocusPainted(false);
 
-		return nenButton;
-	}
+        nenButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	LoginInfoManager.getInstance().setNenId(nenId); // nen_id 가져오기
+                main_frame mainFrame = (main_frame) SwingUtilities.getWindowAncestor(contentPane);
+                JPanel cardPanel = mainFrame.getCardPanel();
+                cardPanel.add(new seach_ingri(), "seach_ingri");
+                mainFrame.showPanel("seach_ingri");
+                
+            }
+        });
 
-	private void insertNen() {
-		try {
-			nvo.setM_id(memberId);
-			dao.insert_n(nvo);
-			System.out.println(nvo.getM_id());
-			
-			JButton newNenButton = createNenButton(nvo.getId());
+        contentPane.add(nenButton);
+        nenButtons.add(nenButton);
+    }
+    
+    private void insertNen() {
+        try {
+            nvo.setM_id(memberId);
+            dao.insert_n(nvo);
+            System.out.println(nvo.getM_id());
 
-			contentPane.add(newNenButton);
-			nenButtons.add(newNenButton);
+            addNenButton(nvo.getId());
 
-			contentPane.revalidate();
-			contentPane.repaint();
+            contentPane.revalidate();
+            contentPane.repaint();
 
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-	}
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        }
+    }
+    
+    private void deleteNen() {
+        try {
+            for (int i = 0; i < nenCheckBoxes.size(); i++) {
+                if (nenCheckBoxes.get(i).isSelected()) {
+                    int nenId = Integer.parseInt(nenButtons.get(i).getText().replace("냉장고 ", ""));
 
-	private int getNextButtonX() {
-		// 현재 생성된 버튼 개수를 사용하여 다음 버튼의 X 좌표를 계산합니다.
-		return 30 + nenButtons.size() * 250; // 적절한 간격으로 버튼을 배치합니다.
-	}
+                    MynenVO nvoToDelete = new MynenVO();
+                    nvoToDelete.setM_id(memberId);
+                    nvoToDelete.setId(nenId);
+
+                    dao.delete_n(nvoToDelete);
+
+                    contentPane.remove(nenCheckBoxes.get(i));
+                    contentPane.remove(nenButtons.get(i));
+
+                    nenCheckBoxes.remove(i);
+                    nenButtons.remove(i);
+
+                    i--;
+                }
+            }
+
+            contentPane.revalidate();
+            contentPane.repaint();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private int getNextButtonX() {
+        return 30 + nenButtons.size() * 250;
+    }
 }

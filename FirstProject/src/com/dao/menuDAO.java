@@ -2,10 +2,11 @@ package com.dao;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 
 import main.DBConnection;
 import oracle.jdbc.internal.OracleTypes;
@@ -35,9 +36,6 @@ public class menuDAO {
 		} finally {
 			if (cstmt != null)
 				cstmt.close();
-			if (conn != null) {
-				conn.close();
-			}
 		}
 		return result;
 	}
@@ -66,56 +64,49 @@ public class menuDAO {
 		} finally {
 			if (cstmt != null)
 				cstmt.close();
-			if (conn != null) {
-				conn.close();
-			}
 		}
 		return result;
 	}
 
 	// 재료 선택 후 메뉴 검색
-	public String search(String ingredient) throws SQLException {
-	    Connection conn = null;
-	    CallableStatement cstmt = null;
-	    ResultSet rs = null;
-	    String resultMessage = null;
-	    String result = null;
+	public List<String> search(List<String> ingredients) throws SQLException {
+		Connection conn = null;
+		CallableStatement cstmt = null;
+		ResultSet rs = null;
+		List<String> menuNames = new ArrayList<>();
+		try {
+			conn = DBConnection.getConnection();
+			String search_menu = "{CALL find_menu(?, ?, ?)}";
 
-	    try {
-	        conn = DBConnection.getConnection();
-	        String search_menu = "{CALL find_menu(?, ?, ?)}";
-	        cstmt = conn.prepareCall(search_menu);
-	        cstmt.setString(1, ingredient);
-	        cstmt.registerOutParameter(2, Types.VARCHAR);
-	        cstmt.registerOutParameter(3, OracleTypes.CURSOR);
+			String allIngredients = String.join(",", ingredients);
+			cstmt = conn.prepareCall(search_menu);
+			cstmt.setString(1, allIngredients);
+			cstmt.registerOutParameter(2, Types.VARCHAR);
+			cstmt.registerOutParameter(3, OracleTypes.CURSOR);
 
-	        cstmt.execute();
-	        resultMessage = cstmt.getString(2); 
-	        System.out.println("결과: " + resultMessage);
+			cstmt.execute();
+			String resultMessage = cstmt.getString(2);
+			System.out.println("결과: " + resultMessage);
 
-	        // 커서 가져오기
-	        rs = (ResultSet) cstmt.getObject(3); 
+			// 커서 가져오기
+			rs = (ResultSet) cstmt.getObject(3);
+			
+			if (rs != null) {
+				while (rs.next()) {
+					String menuName = rs.getString("menu_name");
+					System.out.println(menuName);
+					menuNames.add(menuName);
+				}
+			}
 
-	        if (rs != null) {
-	            while (rs.next()) {
-	                String menuName = rs.getString("menu_name");
-	                System.out.println(menuName);
-	            }
-	        }
-	    } finally {
-	        if (rs != null) {
-	            rs.close();
-	        }
-	        if (cstmt != null) {
-	            cstmt.close();
-	        }
-	        if (conn != null) {
-	            conn.close();
-	        }
-	    }
-	    return resultMessage; 
+		} finally {
+			
+			if (cstmt != null) {
+				cstmt.close();
+			}
+		}
+		return menuNames;
 	}
-
 
 	// 메뉴 수정
 	public String update_menu(String m_id, int menu_id, String new_name, String new_all) throws SQLException {
@@ -135,9 +126,6 @@ public class menuDAO {
 		} finally {
 			if (cstmt != null)
 				cstmt.close();
-			if (conn != null) {
-				conn.close();
-			}
 		}
 		return result;
 	}
@@ -159,9 +147,6 @@ public class menuDAO {
 		} finally {
 			if (cstmt != null)
 				cstmt.close();
-			if (conn != null) {
-				conn.close();
-			}
 		}
 		return result;
 	}

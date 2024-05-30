@@ -41,9 +41,9 @@ public class nen_ingre extends JFrame {
         lblNewLabel.setBounds(12, 8, 166, 37);
         contentPane.add(lblNewLabel);
 
-        JButton btnNewButton = new JButton("냉장고 변경");
-        btnNewButton.setBounds(679, 77, 135, 23);
-        contentPane.add(btnNewButton);// 버튼사이즈
+        JButton backnenButton = new JButton("냉장고 변경");
+        backnenButton.setBounds(679, 77, 135, 23);
+        contentPane.add(backnenButton);// 버튼사이즈
 
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
@@ -62,6 +62,7 @@ public class nen_ingre extends JFrame {
             }
         });
         inputPanel.add(textField);
+        
 
         JButton addButton = new JButton("추가");
         addButton.addActionListener(new ActionListener() {
@@ -78,6 +79,13 @@ public class nen_ingre extends JFrame {
         addButton_1.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         	}
+        });
+        
+        backnenButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	nen_select nen = new nen_select();
+            	nen.setVisible(true); 
+            }
         });
 
                

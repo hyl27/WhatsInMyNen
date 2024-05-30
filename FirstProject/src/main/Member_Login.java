@@ -20,7 +20,7 @@ public class Member_Login {
 
 			rvo.setR_id(1);
 			rvo.setContent("Great food!");
-			rvo.setDate("2024-05-27");
+			//rvo.setDate("2024-05-27");
 			rvo.setRating(5);
 			// MemberVO 객체 생성 및 데이터 설정
 			mvo.setId("d"); // 회원 ID 설정

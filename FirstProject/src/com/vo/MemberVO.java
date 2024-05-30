@@ -4,7 +4,7 @@ public class MemberVO {
 	private String id;
 	private String pw;
 	private String name;
-	private String gender;
+	private char gender;
 	private String bdate;
 	private String email;
 
@@ -12,7 +12,7 @@ public class MemberVO {
 	}
 
 
-	public MemberVO(String id, String pw, String name, String gender, String bdate, String email) {
+	public MemberVO(String id, String pw, String name, char gender, String bdate, String email) {
 		this.id = id;
 		this.pw = pw;
 		this.name = name;
@@ -48,11 +48,11 @@ public class MemberVO {
 		this.name = name;
 	}
 
-	public String getgender() {
+	public int getgender() {
 		return gender;
 	}
 
-	public void setgender(String gender) {
+	public void setgender(char gender) {
 		this.gender = gender;
 	}
 
